@@ -1,0 +1,301 @@
+<html>
+
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>Vue2-Siema</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <script src='https://pawelgrzybek.com/siema/assets/siema.min.js'></script>
+  <script type="text/javascript" src="//unpkg.com/vue"></script>
+  <script src='vue2-siema.min.js'></script>
+
+
+  <style type="text/css">
+    body {
+      background: rgb(52, 54, 58);
+      padding: 20px;
+      font-family: Helvetica;
+    }
+
+    #app>div {
+      background: #fff;
+      border-radius: 4px;
+      padding: 20px;
+      transition: all 0.2s;
+      max-width: 800px;
+      margin: 25px auto;
+    }
+
+
+    h2 {
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    span {
+      color: #777;
+      font-size: 10px;
+    }
+
+    .btn {
+      display: inline-block;
+      border: 2px solid #3a76c5;
+      color: #3a76c5;
+      padding: 4px 10px;
+      transition-duration: 0.2s;
+      cursor: pointer;
+      display: inline-block;
+      vertical-align: top;
+    }
+
+    .btn:hover {
+      color: #fff;
+      background: #3a76c5;
+    }
+    a {
+      color: #3a76c5;
+    }
+    input {
+      border: 2px solid #3a76c5;
+      color: #3a76c5;
+      padding: 5px 10px;
+      display: inline-block;
+      vertical-align: top;
+    }
+    .s {
+      overflow: hidden;
+      min-height: 200px;
+    }
+
+    .s .slide {
+      height: 156px;
+      line-height: 156px;
+      text-align: center;
+      font-size: 24px;
+    }
+    pre {
+      white-space: pre-line;
+      padding: 18px;
+      background: #cecece;
+      border-radius: 4px;
+    }
+    .intro img{
+      max-width: 128px;
+    }
+    .intro {
+      text-align: center;
+    }
+  </style>
+
+
+</head>
+
+<body>
+  <div id="app">
+    <div class="intro">
+      <img src="./vue2-siema.svg">
+      <h1>vue2-siema</h1>
+      <p>A wrapper for the greate <a  href="https://pawelgrzybek.github.io/siema/">siema</a> javascript library</p>
+    </div>
+    <div class="one">
+      <siema ref="siema" :current.sync="curSlide" class="siema s">
+        <div class="slide">
+          <p>Hi, I'm slide 1</p>
+        </div>
+        <div class="slide">
+          <p>Hi, I'm slide 2</p>
+        </div>
+        <div class="slide">
+          <p>Hi, I'm slide 3</p>
+        </div>
+        <div class="slide">
+          <p>Hi, I'm slide 4</p>
+        </div>
+        <div class="slide">
+          <p>Hi, I'm slide 5</p>
+        </div>
+      </siema>
+
+      <div class="btn" @click="$refs.siema.prev()">Prev</div>
+      <div class="btn" @click="$refs.siema.next()">Next</div>
+      <div class="btn">Current slide: {{ curSlide }}</div>
+
+    </div>
+
+    <div class="two">
+      <siema ref="siema2" class="siema2 s" :playing.sync="playing" auto-play :options="options" @change="change">
+        <div class="slide">
+          <p>Hi, I'm slide 1</p>
+        </div>
+        <div class="slide">
+          <p>Hi, I'm slide 2</p>
+        </div>
+        <div class="slide">
+          <p>Hi, I'm slide 3</p>
+        </div>
+        <div class="slide">
+          <p>Hi, I'm slide 4</p>
+        </div>
+        <div class="slide">
+          <p>Hi, I'm slide 5</p>
+        </div>
+      </siema>
+
+      <div class="btn" @click="$refs.siema2.play(autoplaytime)">Play</div>
+      <div class="btn" @click="$refs.siema2.stop()">Stop</div>
+      <div class="btn">Playing: {{ playing }}</div>
+      <input v-model="autoplaytime" @click="stop('siema2')"> ms
+      <div>
+        <span>See console to check <b>@change</b> method</span>
+      </div>
+    </div>
+
+    <div class="three">
+      <siema ref="siema3" class="siema3 s">
+        <div v-for="(item, i) in advance" :key="'slide-' + i" class="slide">
+          I'm {{ item }}
+        </div>
+      </siema>
+
+      <div class="btn" @click="add()">Add</div>
+      <input v-model="whatToAdd">
+      <div class="btn" @click="remove(1)">remove first</div>
+    </div>
+
+    <div class="code">
+      <h3>Usage</h3>
+      With all!<br>
+      Note: all props and ref are optional.
+      <pre>
+        &#x3C;siema ref=&#x22;siema&#x22; class=&#x22;siema&#x22; :current.sync=&#x22;curSlide&#x22; :playing.sync=&#x22;playing&#x22; auto-play :options=&#x22;options&#x22; @change=&#x22;initFunc&#x22; @change=&#x22;changeFunc&#x22;&#x3E;
+
+        &nbsp;&#x3C;div class=&#x22;slide&#x22;&#x3E;
+        &nbsp;&nbsp;&#x3C;p&#x3E;Hi, I&#x27;m slide 1&#x3C;/p&#x3E;
+        &nbsp;&#x3C;/div&#x3E;
+        
+        &nbsp;&#x3C;div class=&#x22;slide&#x22;&#x3E;
+        &nbsp;&nbsp;&#x3C;p&#x3E;Hi, I&#x27;m slide 2&#x3C;/p&#x3E;
+        &nbsp;&#x3C;/div&#x3E;
+        
+        &nbsp;&#x3C;div class=&#x22;slide&#x22;&#x3E;
+        &nbsp;&nbsp;&#x3C;p&#x3E;Hi, I&#x27;m slide 3&#x3C;/p&#x3E;
+        &nbsp;&#x3C;/div&#x3E;
+        
+        &#x3C;/siema&#x3E;
+      </pre>
+      
+      
+      <h4>the options object</h4>
+      For more infomation see the siema page.
+      <pre>
+          options({
+            <span style="text-decoration: line-through;">selector: &#x27;.siema&#x27;,</span> Not needed.
+            duration: 200,
+            easing: &#x27;ease-out&#x27;,
+            perPage: 1,
+            startIndex: 0,
+            draggable: true,
+            multipleDrag: true,
+            threshold: 20,
+            loop: false,
+            rtl: false,
+            <span style="text-decoration: line-through;">onInit: () =&#x3E; {},</span> Use @init 
+            <span style="text-decoration: line-through;">onChange: () =&#x3E; {},</span> Use @change
+          });
+      </pre>
+      <h3>Methods</h3>
+      Added wraps to plugin so you can use it:
+      <pre>this.$refs.siema.init() initialize</pre>
+      From the plugin
+      <pre>    
+          this.$refs.siema.prev( slide = 1, callback)
+          
+          this.$refs.siema.next( slide = 1, callback)
+          
+          this.$refs.siema.goTo( index, callback)
+          
+          this.$refs.siema.remove( index, callback)
+          
+          this.$refs.siema.insert( item, index, callback)
+          
+          this.$refs.siema.prepend( item, callback)
+          
+          this.$refs.siema.append( item, callback)
+
+          destroy(restoreMarkup = false, callback)
+
+      </pre>
+      <h3>Extras</h3>
+      Autoplay
+      <pre>
+          this.$refs.siema.stop() Stop auto play
+    
+          this.$refs.siema.play(time = 6000)
+      </pre>
+      <h3>More...</h3>
+      Data sync
+      <pre>
+          :playing.sync="playing"
+      </pre>
+          boolean: check if autoplay is active
+      
+      <pre>
+          :current.sync="curSlide"
+      </pre>
+          Integer: The current slide
+
+          <p>
+            <a href="https://github.com/sainf/vue2-siema/blob/master/dist/">See This demo for more info. </a>
+          </p>
+    </div>
+
+  </div>
+
+  <script type="text/javascript">
+    window.onload = function () {
+
+      Vue.use(Siema)
+
+      new Vue({
+        el: "#app",
+        data() {
+          return {
+            options: {
+              loop: true,
+            },
+            autoplaytime: 6000,
+            curSlide: 0,
+            playing: false,
+            whatToAdd: 'finding siema',
+            advance: ['trying...', 'sleepy']
+          }
+        },
+        methods: {
+          stop (what) {
+            this.$refs[what].stop()
+          },
+          add() {
+            if (this.whatToAdd) {
+              const newElement = document.createElement('div')
+              newElement.innerHTML = this.whatToAdd
+              newElement.classList.add('slide')
+              this.$refs.siema3.append(newElement)
+            }
+          },
+          remove() {
+            this.$refs.siema3.goTo(1)
+            this.$refs.siema3.remove(0)
+          },
+          change() {
+            console.log('hei!');
+          }
+        }
+      })
+
+    }
+
+  </script>
+</body>
+
+</html>
