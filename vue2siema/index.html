@@ -99,6 +99,10 @@
       <p>A wrapper for the greate <a  href="https://pawelgrzybek.github.io/siema/">siema</a> javascript library</p>
     </div>
     <div class="one">
+      <!-- Basic slide HTML -->
+      <!-- mapped :current.sync="curSlide" (curSlide in vue data)  -->
+      <!-- ref very useful to interact with the slider  -->
+      <!-- Note: No options nedded, using the siema defaults (more info check: https://pawelgrzybek.github.io/siema/)  -->
       <siema ref="siema" :current.sync="curSlide" class="siema s">
         <div class="slide">
           <p>Hi, I'm slide 1</p>
@@ -117,13 +121,16 @@
         </div>
       </siema>
 
+      <!-- some actions.. -->
       <div class="btn" @click="$refs.siema.prev()">Prev</div>
       <div class="btn" @click="$refs.siema.next()">Next</div>
+      <!-- see :current.sync in action...)  -->
       <div class="btn">Current slide: {{ curSlide }}</div>
 
     </div>
 
     <div class="two">
+      <!-- Now using the :options object, and the change method that triggers after slide(s) change  -->
       <siema ref="siema2" class="siema2 s" :playing.sync="playing" auto-play :options="options" @change="change">
         <div class="slide">
           <p>Hi, I'm slide 1</p>
@@ -151,6 +158,9 @@
       </div>
     </div>
 
+    <!-- using a append / remove example -->
+    <!-- Note: adding/removing a value in the reactive array (in this case advance) does NOT refresh the slider, -->
+    <!-- will check it latter -->
     <div class="three">
       <siema ref="siema3" class="siema3 s">
         <div v-for="(item, i) in advance" :key="'slide-' + i" class="slide">
@@ -189,7 +199,7 @@
       <h4>the options object</h4>
       For more infomation see the siema page.
       <pre>
-          options({
+          options {
             <span style="text-decoration: line-through;">selector: &#x27;.siema&#x27;,</span> Not needed.
             duration: 200,
             easing: &#x27;ease-out&#x27;,
@@ -202,7 +212,7 @@
             rtl: false,
             <span style="text-decoration: line-through;">onInit: () =&#x3E; {},</span> Use @init 
             <span style="text-decoration: line-through;">onChange: () =&#x3E; {},</span> Use @change
-          });
+          }
       </pre>
       <h3>Methods</h3>
       Added wraps to plugin so you can use it:
@@ -246,7 +256,7 @@
           Integer: The current slide
 
           <p>
-            <a href="https://github.com/sainf/sainf.github.io/blob/master/vue2siema/index.html">See This demo for more info. </a>
+            <a href="https://github.com/sainf/sainf.github.io/blob/master/vue2siema/index.html">See This demo for more info.</a>
           </p>
     </div>
 
@@ -261,20 +271,26 @@
         el: "#app",
         data() {
           return {
+            // the option object
             options: {
               loop: true,
             },
-            autoplaytime: 6000,
+            // need to declare something if using :current.sync="whatEver"
             curSlide: 0,
+            // need to declare something if using :playing.sync="whatEver"
             playing: false,
+            // and this is only for the demo...
+            autoplaytime: 6000,
             whatToAdd: 'finding siema',
             advance: ['trying...', 'sleepy']
           }
         },
         methods: {
+          // stop an autoplay
           stop (what) {
             this.$refs[what].stop()
           },
+          // and add element to slider example 
           add() {
             if (this.whatToAdd) {
               const newElement = document.createElement('div')
@@ -283,10 +299,12 @@
               this.$refs.siema3.append(newElement)
             }
           },
+          // remove and element
           remove() {
             this.$refs.siema3.goTo(1)
             this.$refs.siema3.remove(0)
           },
+          // an on after change slide...
           change() {
             console.log('hei!');
           }
