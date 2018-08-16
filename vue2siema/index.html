@@ -86,6 +86,16 @@
     .intro {
       text-align: center;
     }
+    .title {
+      font-size: 24px;
+      color: #777;
+      text-align: center;
+      border-bottom: 1px solid #777;
+    }
+    .demolink {
+      font-size: 12px;
+      margin-top: 12px;
+    }
   </style>
 
 
@@ -98,11 +108,13 @@
       <h1>vue2-siema</h1>
       <p>A wrapper for the greate <a  href="https://pawelgrzybek.github.io/siema/">siema</a> javascript library</p>
     </div>
+
+    <!-- Basic slide HTML -->
+    <!-- mapped :current.sync="curSlide" (curSlide in vue data)  -->
+    <!-- ref very useful to interact with the slider  -->
+    <!-- Note: No options nedded, using the siema defaults (more info check: https://pawelgrzybek.github.io/siema/)  -->
     <div class="one">
-      <!-- Basic slide HTML -->
-      <!-- mapped :current.sync="curSlide" (curSlide in vue data)  -->
-      <!-- ref very useful to interact with the slider  -->
-      <!-- Note: No options nedded, using the siema defaults (more info check: https://pawelgrzybek.github.io/siema/)  -->
+      <div class="title">Basic</div>
       <siema ref="siema" :current.sync="curSlide" class="siema s">
         <div class="slide">
           <p>Hi, I'm slide 1</p>
@@ -126,11 +138,12 @@
       <div class="btn" @click="$refs.siema.next()">Next</div>
       <!-- see :current.sync in action...)  -->
       <div class="btn">Current slide: {{ curSlide }}</div>
-
+      <div class="demolink"><a href="https://github.com/sainf/sainf.github.io/blob/master/vue2siema/index.html">See This demo for more info.</a></div>
     </div>
 
+    <!-- Now using the :options object, and the change method that triggers after slide(s) change  -->
     <div class="two">
-      <!-- Now using the :options object, and the change method that triggers after slide(s) change  -->
+      <div class="title">With options</div>
       <siema ref="siema2" class="siema2 s" :playing.sync="playing" auto-play :options="options" @change="change">
         <div class="slide">
           <p>Hi, I'm slide 1</p>
@@ -153,6 +166,7 @@
       <div class="btn" @click="$refs.siema2.stop()">Stop</div>
       <div class="btn">Playing: {{ playing }}</div>
       <input v-model="autoplaytime" @click="stop('siema2')"> ms
+      <div class="demolink"><a href="https://github.com/sainf/sainf.github.io/blob/master/vue2siema/index.html">See This demo for more info.</a></div>
       <div>
         <span>See console to check <b>@change</b> method</span>
       </div>
@@ -162,15 +176,33 @@
     <!-- Note: adding/removing a value in the reactive array (in this case advance) does NOT refresh the slider, -->
     <!-- will check it latter -->
     <div class="three">
+      <div class="title">Adding more slides</div>
       <siema ref="siema3" class="siema3 s">
         <div v-for="(item, i) in advance" :key="'slide-' + i" class="slide">
           I'm {{ item }}
         </div>
       </siema>
-
       <div class="btn" @click="add()">Add</div>
       <input v-model="whatToAdd">
       <div class="btn" @click="remove(1)">remove first</div>
+      <div class="demolink"><a href="https://github.com/sainf/sainf.github.io/blob/master/vue2siema/index.html">See This demo for more info.</a></div>
+      <span>For know this is not with reactive data, just using the siema way</span>
+    </div>
+
+    <!-- using a delayed data -->
+    <!-- using check prop ready -->
+    <div class="four">
+      <div class="title">Delayed data</div>
+      <siema ref="siema4" class="siema s" :ready="false">
+        <div class="slide" v-for="(item, i) in delData" :key="'s-' + i">
+          <p>Hi, I'm a delayed slide {{ item }} - ({{ i }})</p>
+        </div>
+      </siema>
+
+      <!-- some actions.. -->
+      <div class="btn" @click="$refs.siema4.prev()">Prev</div>
+      <div class="btn" @click="$refs.siema4.next()">Next</div>
+      <div class="demolink"><a href="https://github.com/sainf/sainf.github.io/blob/master/vue2siema/index.html">See This demo for more info.</a></div>
     </div>
 
     <div class="code">
@@ -178,7 +210,7 @@
       With all!<br>
       Note: all props and ref are optional.
       <pre>
-        &#x3C;siema ref=&#x22;siema&#x22; class=&#x22;siema&#x22; :current.sync=&#x22;curSlide&#x22; :playing.sync=&#x22;playing&#x22; auto-play :options=&#x22;options&#x22; @change=&#x22;initFunc&#x22; @change=&#x22;changeFunc&#x22;&#x3E;
+        &#x3C;siema ref=&#x22;siema&#x22; class=&#x22;siema&#x22; :current.sync=&#x22;curSlide&#x22; :playing.sync=&#x22;playing&#x22; auto-play :ready=&#x22;true&#x22; :options=&#x22;options&#x22;  @init=&#x22;initFunc&#x22; @change=&#x22;changeFunc&#x22;&#x3E;
 
         &nbsp;&#x3C;div class=&#x22;slide&#x22;&#x3E;
         &nbsp;&nbsp;&#x3C;p&#x3E;Hi, I&#x27;m slide 1&#x3C;/p&#x3E;
@@ -255,6 +287,15 @@
       </pre>
           Integer: The current slide
 
+      <pre>
+          :ready="false"
+      </pre>
+          Boolean: Default true. Use if you need to disable on mounted(), and then start manualy:
+      <pre>
+
+          this.$refs.siema.init()
+      </pre>
+
           <p>
             <a href="https://github.com/sainf/sainf.github.io/blob/master/vue2siema/index.html">See This demo for more info.</a>
           </p>
@@ -282,8 +323,15 @@
             // and this is only for the demo...
             autoplaytime: 6000,
             whatToAdd: 'finding siema',
-            advance: ['trying...', 'sleepy']
+            advance: ['trying...', 'sleepy'],
+            delData: []
           }
+        },
+        mounted() {
+          setTimeout(() => {
+            this.delData = ['one', 'two', 'three', 'four']
+            this.$refs.siema4.init()
+          }, 2000)
         },
         methods: {
           // stop an autoplay
